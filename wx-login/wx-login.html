@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>微信登录操作快速开发流程文档</title>
+		<link rel="stylesheet/less" type="text/css" href="./css/wx-login.less" />
+	</head>
+	<body>
+		<h1>微信登录操作快速开发流程文档</h1>
+		<div class="doc-box">
+			<span>微信给开发者提供的测试账号平台，该平台用于各项对接微信的配置，项目一开始后台同学就要先在这个平台上创建应用，并把前端开发同学的微信添加到这个平台中，用于提供测试公众号：
+				<a href="https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index" target="_blank">平台地址</a>
+			</span>
+		</div>
+		<div class="doc-box">
+			<span>若不嫌烦的同学可以直接跳到微信官方文档：
+				<a href="https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index" target="_blank">文档地址</a>
+			</span>
+		</div>
+		<script src="http://cdn.bootcss.com/less.js/2.5.3/less.min.js"></script>
+		<script type="text/javascript">
+			// 第一步，跳转到指定连接或者code
+			function getWXcode() {
+				// appid：公众号的唯一标识。
+				// redirect_uri：授权后重定向的回调链接地址，要使用encodeURIComponent()对其进行编码处理。
+				// response_type：返回类型，填写code即可。
+				// scope：应用授权作用域。snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid）；snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）。
+				// state：非必须，重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节。
+				// #wechat_redirect：无论直接打开还是做页面302重定向时候，必须带此参数。
+
+				var APPID = '公众号的appid'
+				var REDIRECT_URI = encodeURIComponent('授权后跳转回的页面')
+				var SCOPE = 'snsapi_userinfo'
+				var STATE = '可以自定义的返回参数'
+				location.href =
+					`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}&state=STATE#wechat_redirect `
+			}
+			// 第二步，通过换到的code去微信继续换openid
+			function getOpenid(){
+				// openid在每个公众号下面都是唯一且不变的，所以只要绑定一次即可
+				// openid需要通过上一个接口获得的code去获得，并将相关返回参数存在后台，有些参数官网要求存储需要较高的安全性
+			}
+		</script>
+	</body>
+</html>

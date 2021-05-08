@@ -1,15 +1,26 @@
 # 微信支付
 
 ### 使用场景
-在微信浏览器中唤起微信支付界面，[官方文档地址](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6)  
+1. 微信公众号内嵌H5网页调用微信支付  
+2. 在微信浏览器中的网页唤起微信支付界面  
+3. 详情可以查阅微信支付 [官方文档地址](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6)  
+
+### 功能思路
+1. 后台整合微信统一下单接口，编写预下单接口，并返回订单相关参数  
+2. 后台整合微信订单状态查询接口，编写订单状态查询接口，并返回订单支付状态  
+2. 前台按照下方示例代码，获取相关订单参数后唤起微信支付界面  
+3. 用户支付完后，通过微信返回的参数以及后台查询订单状态接口来判断订单是否支付成功，完成后续业务逻辑操作  
 
 ### 前端代码
-```
-// 判断是否可以调用微信支付的变量
-let can_pay;
 
-// 判断WeixinJSBridge对象是否存在当前浏览器中，该对象只在微信浏览器中有效
-if (typeof WeixinJSBridge == 'undefined') {
+#### 1. 设置判断是否可以调用微信支付的变量
+```
+let can_pay;
+```
+
+#### 2. 判断WeixinJSBridge对象是否存在当前浏览器中，该对象只在微信浏览器中有效，并在回调函数中通过设置判断变量来确认微信支付可用，调用微信相关API
+```
+if (typeof WeixinJSBridge === 'undefined') {
 	if (document.addEventListener) {
 		document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
 	} else if (document.attachEvent) {
@@ -22,25 +33,27 @@ if (typeof WeixinJSBridge == 'undefined') {
 
 onBridgeReady() {
 	can_pay = true;
-	WeixinJSBridge.call('hideOptionMenu');
+	WeixinJSBridge.call('hideOptionMenu'); // 微信API，用于隐藏右上角按钮，与之对应的是显示右上角按钮（showOptionMenu），还有显示隐藏底部导航栏的API（showToolbar/hideToolbar）
 }
+```
 
-// 微信支付的准备工作完成之后，从后台拿到相关支付参数，唤起手机界面上的微信支付界面
+#### 3. 如果判断变量为真则开始通过对象唤起支付界面，并在回调函数中完成其他业务逻辑操作，注意查看注释内容不要直接复制全部代码不做修改
+```
 if (can_pay) {
 	WeixinJSBridge.invoke(
 		'getBrandWCPayRequest',
 		{
 			// res.data对象为后台返回参数对象
-			appId: res.data.appId, //公众号名称，由商户传入
-			timeStamp: res.data.timeStamp, //时间戳，自1970年以来的秒数
-			nonceStr: res.data.nonceStr, //随机串
-			package: res.data.payInfo,
-			signType: res.data.signType, //微信签名方式
-			paySign: res.data.sign //微信签名
+			appId: res.data.appId, // 公众号id，为当前服务商号绑定的appid
+			timeStamp: res.data.timeStamp, // 时间戳，自1970年以来的秒数
+			nonceStr: res.data.nonceStr, // 随机字符串，不长于32位
+			package: res.data.payInfo, // 订单详情扩展字符串，统一下单接口返回的prepay_id参数值
+			signType: res.data.signType, // 签名方式，默认为MD5，支持HMAC-SHA256和MD5
+			paySign: res.data.sign // 签名
 		},
 		// 微信支付官方接口的返回函数
 		function(res) {
-			if (res.err_msg == 'get_brand_wcpay_request:ok') {
+			if (res.err_msg === 'get_brand_wcpay_request:ok') {
 				console.log('这里调用后台的订单状态查询函数，如果后台查询成功则微信支付成功，反之失败')
 			} else {
 				console.log('支付异常')
@@ -48,5 +61,4 @@ if (can_pay) {
 		}
 	);
 }
-
 ```

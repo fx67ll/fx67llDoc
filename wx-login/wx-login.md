@@ -3,15 +3,17 @@
 ### 使用场景
 1. 微信公众号内嵌H5网页调用微信登录  
 2. 在微信浏览器中的网页唤起微信登录界面  
-3. 详情可以查阅微信登录 [官方文档地址](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html)
+
+#### 详情可以查阅微信登录官方文档 [链接地址](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html)
 
 ### 功能思路
 1. 后台先在微信给开发者提供的测试账号平台上创建应用，并把前台开发同学的微信添加到这个平台中，用于提供测试公众号，[平台地址](https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index)  
 2. 前台拼装各种微信登录必须的参数，并将页面跳转到微信指定的连接获取微信登录`code`参数  
 3. 前台解析返回的链接，获取链接中的参数，并将`code`参数传给后台  
-4. 由于后续获取的参数安全等级较高，所以后续的操作均由后台完成，并将数据存储在服务端，后台通过`code`参数换取`access_token`参数和`openid`参数并存储在服务端  
-5. 后台再通过`access_token`参数和`openid`参数换取用户详细信息，并将这4/5两步包装成接口，让前台调用，返回前端登录状态完成微信登录操作  
-6. 如果`access_token`参数失效，使用`refresh_token`刷新即可，详细操作查阅文档，一般用不到这步  
+4. 由于后续获取的参数安全等级较高，所以后续的操作均由后台完成，并将数据存储在服务端  
+	+ 后台通过`code`参数换取`access_token`参数和`openid`参数并存储在服务端  
+	+ 后台再通过`access_token`参数和`openid`参数换取用户详细信息，并将这两步包装成接口，让前台调用，返回前端登录状态完成微信登录操作  
+5. 如果`access_token`参数失效，使用`refresh_token`刷新即可，详细操作查阅文档，一般用不到这步  
 
 ### 前端代码
 
@@ -36,6 +38,7 @@ function getWXcode() {
 	
 	// 重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
 	// 除了此项是非必须参数，其他都是必须要带的参数
+	// 注意！！！该参数通常用于判断跳转回来之前的接口是什么作用，比如用于判断是第一次微信登录还是授权过的快速微信登录
 	var STATE = '可以自定义的返回参数';
 	
 	// 无论直接打开还是做页面302重定向时候，必须带'#wechat_redirect'参数
@@ -66,4 +69,4 @@ function parseData() {
 }
 ```
 
-#### 3. code传给后台，后台对接微信登录后，返回登录状态提示前端登录成功还是失败，并完成后续业务逻辑
+#### 3. code传给后台，后台完成微信登录后续操作后，返回登录状态提示前端登录成功还是失败，然后前台继续后续业务逻辑代码编写

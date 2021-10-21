@@ -70,3 +70,8 @@ function parseData() {
 ```
 
 #### 3. code传给后台，后台完成微信登录后续操作后，返回登录状态提示前端登录成功还是失败，然后前台继续后续业务逻辑代码编写
+
+
+我是[fx67ll.com](https://fx67ll.com)，如果您发现本文有什么错误，欢迎在评论区讨论指正，感谢您的阅读！  
+如果您喜欢这篇文章，欢迎访问我的 [本文github仓库地址](https://github.com/fx67ll/fx67llDoc/blob/main/wx-login/wx-login.md)，为我点一颗Star，Thanks~ :)  
+***转发请注明参考文章地址，非常感谢！！！***

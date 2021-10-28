@@ -15,12 +15,12 @@
 ### 前端代码
 
 #### 1. 设置判断是否可以调用微信支付的变量
-```
+```JavaScript
 let can_pay;
 ```
 
 #### 2. 判断WeixinJSBridge对象是否存在当前浏览器中，该对象只在微信浏览器中有效，并在回调函数中通过设置判断变量来确认微信支付可用，调用微信相关API
-```
+```JavaScript
 if (typeof WeixinJSBridge === 'undefined') {
 	if (document.addEventListener) {
 		document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
@@ -39,7 +39,7 @@ onBridgeReady() {
 ```
 
 #### 3. 如果判断变量为真则开始通过对象唤起支付界面，并在回调函数中完成其他业务逻辑操作，注意查看注释内容不要直接复制全部代码不做修改
-```
+```JavaScript
 if (can_pay) {
 	WeixinJSBridge.invoke(
 		'getBrandWCPayRequest',

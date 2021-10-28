@@ -18,7 +18,7 @@
 ### 前端代码
 
 #### 1. 获取code
-```
+```JavaScript
 function getWXcode() {
 	
 	// 公众号的唯一标识，找公众号管理员提供
@@ -50,8 +50,7 @@ function getWXcode() {
 ```
 
 #### 2. 解析参数
-
-```
+```JavaScript
 function parseData() {
 	
 	// 截取地址栏?后面的内容
